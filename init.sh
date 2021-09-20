@@ -28,4 +28,4 @@ load_lcio2ascii () {
 }
 
 source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/${ILCSOFT_VERSION}/init_ilcsoft.sh
-load_lcio2ascii
+
