@@ -1,4 +1,4 @@
-PROD_NAME=pions50
+PROD_NAME=pions
 N_EVENTS=50
 
 
@@ -24,7 +24,7 @@ run_simulation () {
 }
 
 run_lcio2ascii () {
-    # Deprecated: This does not work properly, as it 
+    # Deprecated: This does not work properly, as it
     source ./init.sh
     load_lcio2ascii
     lcio2ascii data/$PROD_NAME/ascii data/$PROD_NAME/$PROD_NAME.slcio \
@@ -35,11 +35,11 @@ run_lcio2ascii () {
 run_pylcio_powered_2ascii () {
     source ./init.sh
     # TODO: Wait for input from Henri, saing which collections he actually wants to have.
-    # Calls could have a form similar to:
-    dumpevent data/$PROD_NAME/$PROD_NAME.slcio 0 $(($N_EVENTS - 1)) \
-    2>&1 | tee data/$PROD_NAME/convert_pylcio2ascii.log
+    python pylcio_powered_2ascii.py \
+        data/$PROD_NAME/$PROD_NAME.slcio \
+        data/$PROD_NAME/py_ascii \
+        3 4 # 0 $(($N_EVENTS - 1))
 }
 
-run_simulation
+# run_simulation
 run_pylcio_powered_2ascii
-
