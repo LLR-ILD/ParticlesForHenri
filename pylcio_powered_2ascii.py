@@ -95,21 +95,27 @@ class Event2Ascii:
 
     def get_sim_calo_lines(self, collection_name):
         calo_hits = self.event.getCollection(collection_name)
+        is_endcap = (collection_name in ["EcalEndcapRingCollection"])
         cell_id_encoding = calo_hits.getParameters().getStringVal(EVENT.LCIO.CellIDEncoding)
         self._id_decoder = UTIL.BitField64(cell_id_encoding)
         lines = []
         for hit in calo_hits:
-            lines.append(self.get_calo_hit_line(hit))
+            lines.append(self.get_calo_hit_line(hit, is_endcap))
         return lines
 
 
-    def get_calo_hit_line(self, hit):
+    def get_calo_hit_line(self, hit, is_ecal_endcap_ring=False):
         cell_id_info = ["system", "stave", "module", "cellX", "cellY", "layer"]
+        endcap_replacements = dict(cellX="x", cellY="y")
         cell_id = (hit.getCellID0() & 0xffffffff) | (hit.getCellID1() << 32)
         self._id_decoder.setValue(cell_id)
         line_entries = dict()
         for cell_id_key in cell_id_info:
-            line_entries[cell_id_key] = self._id_decoder[cell_id_key].value()
+            if is_ecal_endcap_ring and cell_id_key in endcap_replacements:
+                encoded_key = endcap_replacements[cell_id_key]
+            else:
+                encoded_key = cell_id_key
+            line_entries[cell_id_key] = self._id_decoder[encoded_key].value()
         line_entries["energy"] = hit.getEnergy()
         line_entries["pos_x"] = hit.getPosition()[0]
         line_entries["pos_y"] = hit.getPosition()[1]
