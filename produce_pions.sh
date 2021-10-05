@@ -36,7 +36,6 @@ run_lcio2ascii () {
 }
 
 run_pylcio_powered_2ascii () {
-    source ./init.sh
     # TODO: Wait for input from Henri, saing which collections he actually wants to have.
     python pylcio_powered_2ascii.py \
         data/$PROD_NAME/$PROD_NAME.slcio \
