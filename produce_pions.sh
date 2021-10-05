@@ -1,3 +1,6 @@
+ILCSOFT_VERSION=v02-02-02
+# Choose one of the detector models from https://github.com/iLCSoft/lcgeo/tree/master/ILD/compact.
+ILD_MODEL=ILD_l5_v02
 PROD_NAME=pions50
 N_EVENTS=50
 
@@ -41,5 +44,6 @@ run_pylcio_powered_2ascii () {
         0 $(($N_EVENTS - 1))
 }
 
+source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/${ILCSOFT_VERSION}/init_ilcsoft.sh
 run_simulation
 run_pylcio_powered_2ascii
