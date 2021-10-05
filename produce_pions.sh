@@ -1,7 +1,7 @@
 ILCSOFT_VERSION=v02-02-02
 # Choose one of the detector models from https://github.com/iLCSoft/lcgeo/tree/master/ILD/compact.
 ILD_MODEL=ILD_l5_v02
-PROD_NAME=pions50
+PROD_NAME=pions_new
 N_EVENTS=50
 
 
@@ -36,7 +36,6 @@ run_lcio2ascii () {
 }
 
 run_pylcio_powered_2ascii () {
-    # TODO: Wait for input from Henri, saing which collections he actually wants to have.
     python pylcio_powered_2ascii.py \
         data/$PROD_NAME/$PROD_NAME.slcio \
         data/$PROD_NAME/py_ascii \
