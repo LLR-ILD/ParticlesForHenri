@@ -1,4 +1,4 @@
-PROD_NAME=pions
+PROD_NAME=pions50
 N_EVENTS=50
 
 
@@ -38,8 +38,8 @@ run_pylcio_powered_2ascii () {
     python pylcio_powered_2ascii.py \
         data/$PROD_NAME/$PROD_NAME.slcio \
         data/$PROD_NAME/py_ascii \
-        3 4 # 0 $(($N_EVENTS - 1))
+        0 $(($N_EVENTS - 1))
 }
 
-# run_simulation
+run_simulation
 run_pylcio_powered_2ascii

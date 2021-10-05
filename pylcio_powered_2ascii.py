@@ -92,6 +92,60 @@ class Event2Ascii:
         with open(hit_file_name, "w") as f:
             f.write("\n".join(lines) + "\n")
 
+        mc_lines = self.get_mc_lines()
+        mc_file_name = "{:s}/event{:s}.nikp".format(ascii_out_dir, event_identifier)
+        with open(mc_file_name, "w") as f:
+            f.write("\n".join(mc_lines) + "\n")
+
+
+    def get_parent(self, mcp):
+        parents = mcp.getParents()
+        if len(parents) == 0:
+            parent_id = -1
+        elif len(parents) > 1:
+            raise Exception("No particle should have multiple parents.")
+        else:
+            parent_id = self._mcp_ids.get(parents[0].id())
+        return parent_id
+
+
+    def get_mc_particle_line(self, mcp):
+        index = self._mcp_ids.get(mcp.id())
+        if index is None:
+            index = len(self._mcp_ids)
+            self._mcp_ids[mcp.id()] = index
+        line_entries = dict(index=index)
+        line_entries["pdg"] = mcp.getPDG()
+        line_entries["charge"] = mcp.getCharge()
+        line_entries["energy"] = mcp.getEnergy()
+        line_entries["parent"] = self.get_parent(mcp)
+        line_entries["start_x"] = mcp.getVertex()[0]
+        line_entries["start_y"] = mcp.getVertex()[1]
+        line_entries["start_z"] = mcp.getVertex()[2]
+        line_entries["mom_x"] = mcp.getMomentum()[0]
+        line_entries["mom_y"] = mcp.getMomentum()[1]
+        line_entries["mom_z"] = mcp.getMomentum()[2]
+        line_entries["end_x"] = mcp.getEndpoint()[0]
+        line_entries["end_y"] = mcp.getEndpoint()[1]
+        line_entries["end_z"] = mcp.getEndpoint()[2]
+
+        string_template = " ".join([
+            "{index:d} {pdg:d} {start_x:.5e} {start_y:.5e} {start_z:.5e}",
+            "{mom_x:.5e} {mom_y:.5e} {mom_z:.5e}",
+            "{charge:.1f} {energy:.5e} {parent:d}",
+            "{end_x:.5e} {end_y:.5e} {end_z:.5e}",
+        ])
+        return string_template.format(**line_entries)
+
+
+    def get_mc_lines(self, collection_name="MCParticle"):
+        self._mcp_ids = {}
+        mc_collection = self.event.getCollection(collection_name)
+        lines = []
+        for mcp in mc_collection:
+            lines.append(self.get_mc_particle_line(mcp))
+        return lines
+
 
     def get_sim_calo_lines(self, collection_name):
         calo_hits = self.event.getCollection(collection_name)
@@ -124,7 +178,7 @@ class Event2Ascii:
         line_entries.update(get_hit_contribution_info(hit))
         string_template = " ".join([
             "{system:d} {stave:d} {module:d} {cellX:d} {cellY:d} {layer:d}",
-            "{energy:.5e}, {pos_x:.5e}, {pos_y:.5e}, {pos_z:.5e}",
+            "{energy:.5e} {pos_x:.5e} {pos_y:.5e} {pos_z:.5e}",
             "{n_not_el:d} {n_el:d} {first_pdg:d} {first_time:.5e}",
         ])
         return string_template.format(**line_entries)
@@ -140,7 +194,7 @@ def write_events_to_ascii(slcio_file, ascii_out_dir, ev_start, ev_stop):
             continue
         if i >= ev_stop:
             break
-        event_identifier = "{0:04}".format(i)
+        event_identifier = "{0:06}".format(i)
         Event2Ascii(event, ascii_out_dir, event_identifier)
 
 
