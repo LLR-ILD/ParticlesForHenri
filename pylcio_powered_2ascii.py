@@ -3,6 +3,7 @@ from __future__ import print_function  # python3 style printing in python2.
 import logging
 import os
 import sys
+import tarfile
 
 from pyLCIO.io import LcioReader
 from pyLCIO import EVENT, IMPL, UTIL
@@ -21,6 +22,7 @@ $ python pylcio_powered_2ascii.py slcio_file ascii_out_dir ev_start ev_stop
 - ev_start ev_stop: Integers. Specify both or neither of them. Will process
     (ev_stop - ev_start) events. Use ev_stop=-1 to exhaust the file.
 """
+
 
 
 def get_subdetector_CellIDEncoding(calo_collection):
@@ -196,6 +198,10 @@ def write_events_to_ascii(slcio_file, ascii_out_dir, ev_start, ev_stop):
             break
         event_identifier = "{0:06}".format(i)
         Event2Ascii(event, ascii_out_dir, event_identifier)
+    ascii_tar_dir = os.path.join(ascii_out_dir, os.path.pardir)
+    ascii_tar_file = os.path.join(ascii_tar_dir, "ascii.tar.gz")
+    with tarfile.open(ascii_tar_file, "w:gz") as tar:
+	tar.add(ascii_out_dir, arcname=os.path.sep)
 
 
 def validate_command_line_args():

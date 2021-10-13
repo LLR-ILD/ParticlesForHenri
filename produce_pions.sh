@@ -10,7 +10,6 @@ run_simulation () {
         printf "$PROD_NAME was already used for another production run. "
         printf "Please remove that run or change PROD_NAME."
     else
-        source ./init.sh
         mkdir -p data/$PROD_NAME
         ddsim \
             --steeringFile /cvmfs/ilc.desy.de/sw/ILDConfig/$ILCSOFT_VERSION/StandardConfig/production/ddsim_steer.py \
