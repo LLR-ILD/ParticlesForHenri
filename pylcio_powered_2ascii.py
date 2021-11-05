@@ -85,14 +85,23 @@ class Event2Ascii:
     def __init__(self, event, ascii_out_dir, event_identifier):
         self.event = event
 
-        lines = []
+        hit_lines = []
+        subhit_lines = []
         for collection_calo in self.collections_SimCalorimeterHit:
-            subdetector_lines = self.get_sim_calo_lines(collection_calo)
-            lines.extend(subdetector_lines)
+            subdetector_hit_lines, subdetector_subhit_lines = self.get_sim_calo_lines(
+                collection_calo, 
+                line_number_offset=len(hit_lines),
+            )
+            hit_lines.extend(subdetector_hit_lines)
+            subhit_lines.extend(subdetector_subhit_lines)
 
         hit_file_name = "{:s}/{:s}.hits".format(ascii_out_dir, event_identifier)
         with open(hit_file_name, "w") as f:
-            f.write("\n".join(lines) + "\n")
+            f.write("\n".join(hit_lines) + "\n")
+
+        subhit_file_name = "{:s}/ecal{:s}.subhits".format(ascii_out_dir, event_identifier)
+        with open(subhit_file_name, "w") as f:
+            f.write("\n".join(subhit_lines) + "\n")
 
         mc_lines = self.get_mc_lines()
         mc_file_name = "{:s}/event{:s}.nikp".format(ascii_out_dir, event_identifier)
@@ -149,15 +158,17 @@ class Event2Ascii:
         return lines
 
 
-    def get_sim_calo_lines(self, collection_name):
+    def get_sim_calo_lines(self, collection_name, line_number_offset=0):
         calo_hits = self.event.getCollection(collection_name)
         is_endcap = (collection_name in ["EcalEndcapRingCollection"])
         cell_id_encoding = calo_hits.getParameters().getStringVal(EVENT.LCIO.CellIDEncoding)
         self._id_decoder = UTIL.BitField64(cell_id_encoding)
         lines = []
-        for hit in calo_hits:
+        subhit_lines = []
+        for i ,hit in enumerate(calo_hits, start=line_number_offset+1):
             lines.append(self.get_calo_hit_line(hit, is_endcap))
-        return lines
+            subhit_lines.extend(self.get_calo_subhit_lines(hit, i))
+        return lines, subhit_lines
 
 
     def get_calo_hit_line(self, hit, is_ecal_endcap_ring=False):
@@ -186,6 +197,28 @@ class Event2Ascii:
         return string_template.format(**line_entries)
 
 
+    def get_calo_subhit_lines(self, hit, hit_id):
+        string_template = " ".join([
+            "{primary_pdg:d} {energy:.3e} {time:.3e} {length:.2e}",
+            "{secondary_pdg:d} {pos_x:.2e} {pos_y:.2e} {pos_z:.2e}",
+            "{hit_id:d}",
+        ])
+        line_entries = dict(hit_id=hit_id)
+        lines = []
+        for i_subhit in range(hit.getNMCContributions()):
+            line_entries["primary_pdg"] =  hit.getParticleCont(i_subhit).getPDG()
+            line_entries["energy"] =  hit.getEnergyCont(i_subhit)
+            line_entries["time"] =  hit.getTimeCont(i_subhit)
+            line_entries["length"] =  hit.getTimeCont(i_subhit)
+            line_entries["length"] = hit.getLengthCont(i_subhit)
+            line_entries["secondary_pdg"] = hit.getPDGCont(i_subhit)
+            line_entries["pos_x"] = hit.getStepPosition(i_subhit)[0]
+            line_entries["pos_y"] = hit.getStepPosition(i_subhit)[1]
+            line_entries["pos_z"] = hit.getStepPosition(i_subhit)[2]
+            lines.append(string_template.format(**line_entries))
+        return lines
+
+
 def write_events_to_ascii(slcio_file, ascii_out_dir, ev_start, ev_stop):
     reader = LcioReader.LcioReader(slcio_file)
     if ev_stop < 0:
@@ -201,7 +234,7 @@ def write_events_to_ascii(slcio_file, ascii_out_dir, ev_start, ev_stop):
     ascii_tar_dir = os.path.join(ascii_out_dir, os.path.pardir)
     ascii_tar_file = os.path.join(ascii_tar_dir, "ascii.tar.gz")
     with tarfile.open(ascii_tar_file, "w:gz") as tar:
-	tar.add(ascii_out_dir, arcname=os.path.sep)
+        tar.add(ascii_out_dir, arcname=os.path.sep)
 
 
 def validate_command_line_args():

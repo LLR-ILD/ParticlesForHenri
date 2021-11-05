@@ -1,7 +1,7 @@
 ILCSOFT_VERSION=v02-02-02
 # Choose one of the detector models from https://github.com/iLCSoft/lcgeo/tree/master/ILD/compact.
 ILD_MODEL=ILD_l5_v02
-PROD_NAME=pions_new
+PROD_NAME=pions_v3
 N_EVENTS=50
 
 
