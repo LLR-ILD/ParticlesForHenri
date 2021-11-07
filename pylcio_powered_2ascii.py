@@ -191,7 +191,7 @@ class Event2Ascii:
         line_entries.update(get_hit_contribution_info(hit))
         string_template = " ".join([
             "{system:d} {stave:d} {module:d} {cellX:d} {cellY:d} {layer:d}",
-            "{energy:.5e} {pos_x:.5e} {pos_y:.5e} {pos_z:.5e}",
+            "{energy:.4e} {pos_x:.5e} {pos_y:.5e} {pos_z:.5e}",
             "{n_not_el:d} {n_el:d} {first_pdg:d} {first_time:.5e}",
         ])
         return string_template.format(**line_entries)
@@ -199,8 +199,8 @@ class Event2Ascii:
 
     def get_calo_subhit_lines(self, hit, hit_id):
         string_template = " ".join([
-            "{primary_pdg:d} {energy:.3e} {time:.3e} {length:.2e}",
-            "{secondary_pdg:d} {pos_x:.2e} {pos_y:.2e} {pos_z:.2e}",
+            "{primary_pdg:d} {energy:.4e} {time:.5e} {length:.2e}",
+            "{secondary_pdg:d} {pos_x:.5e} {pos_y:.5e} {pos_z:.5e}",
             "{hit_id:d}",
         ])
         line_entries = dict(hit_id=hit_id)
