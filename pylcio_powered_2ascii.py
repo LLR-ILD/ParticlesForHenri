@@ -172,16 +172,20 @@ class Event2Ascii:
 
 
     def get_calo_hit_line(self, hit, is_ecal_endcap_ring=False):
-        cell_id_info = ["system", "stave", "module", "cellX", "cellY", "layer"]
+        cell_id_info = ["system", "stave", "module", "cellX", "cellY", "tower", "layer", "wafer", "slice"]
         endcap_replacements = dict(cellX="x", cellY="y")
         cell_id = (hit.getCellID0() & 0xffffffff) | (hit.getCellID1() << 32)
         self._id_decoder.setValue(cell_id)
         line_entries = dict()
         for cell_id_key in cell_id_info:
-            if is_ecal_endcap_ring and cell_id_key in endcap_replacements:
-                encoded_key = endcap_replacements[cell_id_key]
-            else:
-                encoded_key = cell_id_key
+            encoded_key = cell_id_key
+            if is_ecal_endcap_ring:
+                if cell_id_key in endcap_replacements:
+                    encoded_key = endcap_replacements[cell_id_key]
+                elif cell_id_key in ["wafer", "slice"]:
+                    # Endcaps have no wafer information.
+                    line_entries[cell_id_key] = -1
+                    continue
             line_entries[cell_id_key] = self._id_decoder[encoded_key].value()
         line_entries["energy"] = hit.getEnergy()
         line_entries["pos_x"] = hit.getPosition()[0]
@@ -190,7 +194,8 @@ class Event2Ascii:
 
         line_entries.update(get_hit_contribution_info(hit))
         string_template = " ".join([
-            "{system:d} {stave:d} {module:d} {cellX:d} {cellY:d} {layer:d}",
+            "{system:d} {stave:d} {module:d} {cellX:d} {cellY:d} ",
+            "{tower:d} {layer:d} {wafer:d}",
             "{energy:.4e} {pos_x:.5e} {pos_y:.5e} {pos_z:.5e}",
             "{n_not_el:d} {n_el:d} {first_pdg:d} {first_time:.5e}",
         ])
