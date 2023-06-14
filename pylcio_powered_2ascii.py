@@ -232,7 +232,7 @@ def write_events_to_ascii(slcio_file, ascii_out_dir, ev_start, ev_stop):
     for i, event in enumerate(reader):
         if i < ev_start:
             continue
-        if i > ev_stop:
+        if i >= ev_stop:
             break
         event_identifier = "{0:06}".format(i)
         Event2Ascii(event, ascii_out_dir, event_identifier)
