@@ -13,7 +13,6 @@ from ROOT import vector
 format = "%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s"
 logging.basicConfig(format=format, level=logging.DEBUG)
 
-
 help_string = """The script must be called with 2 or 4 arguments as:
 $ python pylcio_powered_2ascii.py slcio_file ascii_out_dir ev_start ev_stop
 - slcio_file: File with the reconstructed information in LCIO format.
@@ -22,8 +21,6 @@ $ python pylcio_powered_2ascii.py slcio_file ascii_out_dir ev_start ev_stop
 - ev_start ev_stop: Integers. Specify both or neither of them. Will process
     (ev_stop - ev_start) events. Use ev_stop=-1 to exhaust the file.
 """
-
-
 
 def get_subdetector_CellIDEncoding(calo_collection):
     """Currently not used."""
