@@ -1,0 +1,177 @@
+#ifdef __CLING__
+#pragma cling optimize(0)
+#endif
+void geom-S-xy-Endcap()
+{
+//=========Macro generated from canvas: c1/c1
+//=========  (Wed Jun 21 18:14:08 2023) by ROOT version 6.26/04
+   TCanvas *c1 = new TCanvas("c1", "c1",319,61,675,697);
+   gStyle->SetOptFit(1);
+   c1->Range(-3000,-3000,3000,3000);
+   c1->SetFillColor(0);
+   c1->SetBorderMode(0);
+   c1->SetBorderSize(2);
+   c1->SetFrameBorderMode(0);
+   c1->SetFrameBorderMode(0);
+   
+   TH2F *htemp__3 = new TH2F("htemp__3","y:x:S {M==0 && C==29}",40,-2400,2400,40,-2400,2400);
+   htemp__3->SetMinimum(1);
+   htemp__3->SetMaximum(4);
+   htemp__3->SetEntries(27145);
+   htemp__3->SetDirectory(0);
+   htemp__3->SetStats(0);
+   htemp__3->SetContour(99);
+   htemp__3->SetContourLevel(0,1);
+   htemp__3->SetContourLevel(1,1.030303);
+   htemp__3->SetContourLevel(2,1.060606);
+   htemp__3->SetContourLevel(3,1.090909);
+   htemp__3->SetContourLevel(4,1.121212);
+   htemp__3->SetContourLevel(5,1.151515);
+   htemp__3->SetContourLevel(6,1.181818);
+   htemp__3->SetContourLevel(7,1.212121);
+   htemp__3->SetContourLevel(8,1.242424);
+   htemp__3->SetContourLevel(9,1.272727);
+   htemp__3->SetContourLevel(10,1.30303);
+   htemp__3->SetContourLevel(11,1.333333);
+   htemp__3->SetContourLevel(12,1.363636);
+   htemp__3->SetContourLevel(13,1.393939);
+   htemp__3->SetContourLevel(14,1.424242);
+   htemp__3->SetContourLevel(15,1.454545);
+   htemp__3->SetContourLevel(16,1.484848);
+   htemp__3->SetContourLevel(17,1.515152);
+   htemp__3->SetContourLevel(18,1.545455);
+   htemp__3->SetContourLevel(19,1.575758);
+   htemp__3->SetContourLevel(20,1.606061);
+   htemp__3->SetContourLevel(21,1.636364);
+   htemp__3->SetContourLevel(22,1.666667);
+   htemp__3->SetContourLevel(23,1.69697);
+   htemp__3->SetContourLevel(24,1.727273);
+   htemp__3->SetContourLevel(25,1.757576);
+   htemp__3->SetContourLevel(26,1.787879);
+   htemp__3->SetContourLevel(27,1.818182);
+   htemp__3->SetContourLevel(28,1.848485);
+   htemp__3->SetContourLevel(29,1.878788);
+   htemp__3->SetContourLevel(30,1.909091);
+   htemp__3->SetContourLevel(31,1.939394);
+   htemp__3->SetContourLevel(32,1.969697);
+   htemp__3->SetContourLevel(33,2);
+   htemp__3->SetContourLevel(34,2.030303);
+   htemp__3->SetContourLevel(35,2.060606);
+   htemp__3->SetContourLevel(36,2.090909);
+   htemp__3->SetContourLevel(37,2.121212);
+   htemp__3->SetContourLevel(38,2.151515);
+   htemp__3->SetContourLevel(39,2.181818);
+   htemp__3->SetContourLevel(40,2.212121);
+   htemp__3->SetContourLevel(41,2.242424);
+   htemp__3->SetContourLevel(42,2.272727);
+   htemp__3->SetContourLevel(43,2.30303);
+   htemp__3->SetContourLevel(44,2.333333);
+   htemp__3->SetContourLevel(45,2.363636);
+   htemp__3->SetContourLevel(46,2.393939);
+   htemp__3->SetContourLevel(47,2.424242);
+   htemp__3->SetContourLevel(48,2.454545);
+   htemp__3->SetContourLevel(49,2.484848);
+   htemp__3->SetContourLevel(50,2.515152);
+   htemp__3->SetContourLevel(51,2.545455);
+   htemp__3->SetContourLevel(52,2.575758);
+   htemp__3->SetContourLevel(53,2.606061);
+   htemp__3->SetContourLevel(54,2.636364);
+   htemp__3->SetContourLevel(55,2.666667);
+   htemp__3->SetContourLevel(56,2.69697);
+   htemp__3->SetContourLevel(57,2.727273);
+   htemp__3->SetContourLevel(58,2.757576);
+   htemp__3->SetContourLevel(59,2.787879);
+   htemp__3->SetContourLevel(60,2.818182);
+   htemp__3->SetContourLevel(61,2.848485);
+   htemp__3->SetContourLevel(62,2.878788);
+   htemp__3->SetContourLevel(63,2.909091);
+   htemp__3->SetContourLevel(64,2.939394);
+   htemp__3->SetContourLevel(65,2.969697);
+   htemp__3->SetContourLevel(66,3);
+   htemp__3->SetContourLevel(67,3.030303);
+   htemp__3->SetContourLevel(68,3.060606);
+   htemp__3->SetContourLevel(69,3.090909);
+   htemp__3->SetContourLevel(70,3.121212);
+   htemp__3->SetContourLevel(71,3.151515);
+   htemp__3->SetContourLevel(72,3.181818);
+   htemp__3->SetContourLevel(73,3.212121);
+   htemp__3->SetContourLevel(74,3.242424);
+   htemp__3->SetContourLevel(75,3.272727);
+   htemp__3->SetContourLevel(76,3.30303);
+   htemp__3->SetContourLevel(77,3.333333);
+   htemp__3->SetContourLevel(78,3.363636);
+   htemp__3->SetContourLevel(79,3.393939);
+   htemp__3->SetContourLevel(80,3.424242);
+   htemp__3->SetContourLevel(81,3.454545);
+   htemp__3->SetContourLevel(82,3.484848);
+   htemp__3->SetContourLevel(83,3.515152);
+   htemp__3->SetContourLevel(84,3.545455);
+   htemp__3->SetContourLevel(85,3.575758);
+   htemp__3->SetContourLevel(86,3.606061);
+   htemp__3->SetContourLevel(87,3.636364);
+   htemp__3->SetContourLevel(88,3.666667);
+   htemp__3->SetContourLevel(89,3.69697);
+   htemp__3->SetContourLevel(90,3.727273);
+   htemp__3->SetContourLevel(91,3.757576);
+   htemp__3->SetContourLevel(92,3.787879);
+   htemp__3->SetContourLevel(93,3.818182);
+   htemp__3->SetContourLevel(94,3.848485);
+   htemp__3->SetContourLevel(95,3.878788);
+   htemp__3->SetContourLevel(96,3.909091);
+   htemp__3->SetContourLevel(97,3.939394);
+   htemp__3->SetContourLevel(98,3.969697);
+   
+   TPaletteAxis *palette = new TPaletteAxis(2430,-2400,2700,2400,htemp__3);
+   palette->SetLabelColor(1);
+   palette->SetLabelFont(42);
+   palette->SetLabelOffset(0.005);
+   palette->SetLabelSize(0.035);
+   palette->SetTitleOffset(1);
+   palette->SetTitleSize(0.035);
+
+   Int_t ci;      // for color index setting
+   TColor *color; // for color definition with alpha
+   ci = TColor::GetColor("#f9f90e");
+   palette->SetFillColor(ci);
+   palette->SetFillStyle(1001);
+   htemp__3->GetListOfFunctions()->Add(palette,"br");
+//Primitive: graphs/An array of objects. You must implement TObjArray::SavePrimitive
+   htemp__3->GetListOfFunctions()->Add(graphs,"P");
+
+   ci = TColor::GetColor("#000099");
+   htemp__3->SetLineColor(ci);
+   htemp__3->SetMarkerColor(2);
+   htemp__3->SetMarkerStyle(8);
+   htemp__3->SetMarkerSize(0.75);
+   htemp__3->GetXaxis()->SetTitle("x");
+   htemp__3->GetXaxis()->SetRange(1,40);
+   htemp__3->GetXaxis()->SetLabelFont(42);
+   htemp__3->GetXaxis()->SetTitleOffset(1);
+   htemp__3->GetYaxis()->SetTitle("y");
+   htemp__3->GetYaxis()->SetRange(1,40);
+   htemp__3->GetYaxis()->SetLabelFont(42);
+   htemp__3->GetZaxis()->SetTitle("S");
+   htemp__3->GetZaxis()->SetLabelFont(42);
+   htemp__3->GetZaxis()->SetTitleOffset(1);
+   htemp__3->Draw("func z");
+   
+   TPaveText *pt = new TPaveText(0.2106538,0.9360714,0.7893462,0.995,"blNDC");
+   pt->SetName("title");
+   pt->SetBorderSize(0);
+   pt->SetFillColor(0);
+   pt->SetFillStyle(0);
+   pt->SetTextFont(42);
+   TText *pt_LaTex = pt->AddText("y:x:S {M==0 && C==29}");
+   pt->Draw();
+   TLine *line = new TLine(371.9745,2356.164,371.9745,-438.3562);
+   line->Draw();
+   line = new TLine(-392.3567,405.4794,-392.3567,-2389.041);
+   line->Draw();
+   line = new TLine(-2328.662,405.4794,382.1656,405.4794);
+   line->Draw();
+   line = new TLine(-402.5478,-405.4795,2308.28,-405.4795);
+   line->Draw();
+   c1->Modified();
+   c1->cd();
+   c1->SetSelected(c1);
+}
