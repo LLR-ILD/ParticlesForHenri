@@ -4,3 +4,6 @@ quick_checks.ipynb
 ILD_l5_v02.xml
 *~
 .vscode/settings.json
+*.code-workspace
+.#* 
+*.log
