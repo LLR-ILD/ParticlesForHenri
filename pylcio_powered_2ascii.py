@@ -226,17 +226,20 @@ def write_events_to_ascii(slcio_file, ascii_out_dir, ev_start, ev_stop):
     if ev_stop < 0:
         ev_stop = reader.getNumberOfEvents() + ev_stop + 1
 
+    nevent = 0
     for i, event in enumerate(reader):
         if i < ev_start:
             continue
-        if i >= ev_stop:
+        if i > ev_stop:
             break
+        nevent=nevent+1
         event_identifier = "{0:06}".format(i)
         Event2Ascii(event, ascii_out_dir, event_identifier)
     ascii_tar_dir = os.path.join(ascii_out_dir, os.path.pardir)
     ascii_tar_file = os.path.join(ascii_tar_dir, "ascii.tar.gz")
     with tarfile.open(ascii_tar_file, "w:gz") as tar:
         tar.add(ascii_out_dir, arcname=os.path.sep)
+    print(nevent, "events printed to ", ascii_out_dir)
 
 
 def validate_command_line_args():
