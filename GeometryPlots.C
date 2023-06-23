@@ -27,8 +27,14 @@ T->Draw("r:z:T", "C==20", "colz")
 T->Draw("x:y:S", "C==20", "colz")
 gPad->SaveAs("geom-S-xy-Barrel.png")
 
-// Layers in the barrel
+// Layers in the barrel radial vue
 T->Draw("x:y:L", "C==20", "colz")
 gPad->SaveAs("geom-L-xy-Barrel.png")
 
+// Layers in polar view
+T->Draw("y:z:L", "C==20 && S==3", "colz")
+T->Draw("y:z:L", "S%4==3", "colz"); // for staves==3 or 7.
 
+// Towers in polar view
+T->Draw("y:z:T", "S%4==3", "colz")
+gPad->SaveAs("geom-T-yz-S3.png")
