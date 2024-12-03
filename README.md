@@ -7,3 +7,4 @@ The resulting file-format and content was chosen for the needs of Henri.
 
 1. Generate events in the ILD detector (in `.slcio` format).
 2. From this file, create the human-readable files through `pylcio_powered_2ascii.py`.
+or `pylcio_powered_2ascii_v3.py`
