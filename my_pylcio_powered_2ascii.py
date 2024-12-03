@@ -9,6 +9,8 @@ from pyLCIO.io import LcioReader
 from pyLCIO import EVENT, IMPL, UTIL
 from ROOT import vector
 
+first_evt=True
+
 # logging.DEBUG for debugging. Else logging.INFO.
 format = "%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s"
 logging.basicConfig(format=format, level=logging.DEBUG)
@@ -43,7 +45,7 @@ def get_hit_contribution_info(hit):
     n_hits_not_electron = 0
     time_earliest_not_electron_if_possible = float("inf")
     pdg_earliest_not_electron_if_possible = None
-    for i in range(hit.getNMCContributions()):
+    for i in range(hit.getNMCContributions()): #suppose time ordering ?
         if hit.getPDGCont(i) == 11:
             n_hits_electron += 1
             if n_hits_not_electron == 0:
@@ -51,7 +53,6 @@ def get_hit_contribution_info(hit):
                 if contribution_time < time_earliest_not_electron_if_possible:
                     time_earliest_not_electron_if_possible = contribution_time
                     pdg_earliest_not_electron_if_possible = hit.getPDGCont(i)
-
         else:
             n_hits_not_electron += 1
             contribution_time = hit.getTimeCont(i)
@@ -79,10 +80,7 @@ class Event2Ascii:
         "EcalEndcapRingCollection",
         "HCalBarrelRPCHits",
         "HCalECRingRPCHits",
-        "HCalEndcapRPCHits",
-        "HcalBarrelRegCollection",
-        "HcalEndcapRingCollection",
-        "HcalEndcapsCollection",
+        "HCalEndcapRPCHits"
     ]
 
     def __init__(self, event, ascii_out_dir, event_identifier):
@@ -98,11 +96,11 @@ class Event2Ascii:
             hit_lines.extend(subdetector_hit_lines)
             subhit_lines.extend(subdetector_subhit_lines)
 
-        hit_file_name = "{:s}/{:s}.hits".format(ascii_out_dir, event_identifier)
+        hit_file_name = "{:s}/calo{:s}.hits".format(ascii_out_dir, event_identifier)
         with open(hit_file_name, "w") as f:
             f.write("\n".join(hit_lines) + "\n")
 
-        subhit_file_name = "{:s}/ecal{:s}.subhits".format(ascii_out_dir, event_identifier)
+        subhit_file_name = "{:s}/calo{:s}.subhits".format(ascii_out_dir, event_identifier)
         with open(subhit_file_name, "w") as f:
             f.write("\n".join(subhit_lines) + "\n")
 
@@ -133,21 +131,23 @@ class Event2Ascii:
         line_entries["charge"] = mcp.getCharge()
         line_entries["energy"] = mcp.getEnergy()
         line_entries["parent"] = self.get_parent(mcp)
+        line_entries["start_t"] = mcp.getTime()
         line_entries["start_x"] = mcp.getVertex()[0]
         line_entries["start_y"] = mcp.getVertex()[1]
         line_entries["start_z"] = mcp.getVertex()[2]
         line_entries["mom_x"] = mcp.getMomentum()[0]
         line_entries["mom_y"] = mcp.getMomentum()[1]
         line_entries["mom_z"] = mcp.getMomentum()[2]
+        line_entries["end_t"] = 0 # needs to be calculated from daugther's vertex
         line_entries["end_x"] = mcp.getEndpoint()[0]
         line_entries["end_y"] = mcp.getEndpoint()[1]
         line_entries["end_z"] = mcp.getEndpoint()[2]
 
         string_template = " ".join([
-            "{index:d} {pdg:d} {start_x:.5e} {start_y:.5e} {start_z:.5e}",
-            "{mom_x:.5e} {mom_y:.5e} {mom_z:.5e}",
-            "{charge:.1f} {energy:.5e} {parent:d}",
-            "{end_x:.5e} {end_y:.5e} {end_z:.5e}",
+            "{index:d} {pdg:d} {start_t:.5e} {start_x:.5e} {start_y:.5e} {start_z:.5e}",
+            "{energy:.5e} {mom_x:.5e} {mom_y:.5e} {mom_z:.5e}",
+            "{charge:.1f} {parent:d}",
+            "{end_t:.5e} {end_x:.5e} {end_y:.5e} {end_z:.5e}",
         ])
         return string_template.format(**line_entries)
 
@@ -162,7 +162,7 @@ class Event2Ascii:
 
 
     def get_sim_calo_lines(self, collection_name, line_number_offset=0):
-        print(collection_name)
+        # print("Collection :", collection_name)
         calo_hits = self.event.getCollection(collection_name)
         is_ecal_central = (collection_name in ["ECalBarrelSiHitsEven", "ECalBarrelSiHitsOdd", "ECalEndcapSiHitsEven", "ECalEndcapSiHitsOdd",
                                                "ECalBarrelScHitsEven", "ECalBarrelScHitsOdd", "ECalEndcapScHitsEven", "ECalEndcapScHitsOdd"])
@@ -191,11 +191,11 @@ class Event2Ascii:
             if is_ecal_central:
                 if cell_id_key in EcalBarrel_replacements:
                     encoded_key = EcalBarrel_replacements[cell_id_key]
-                elif cell_id_key in ["wafer", "slice"]:
-                    # Endcaps have no wafer information.
-                    line_entries[cell_id_key] = -1
-                    continue
-            print(cell_id_key, encoded_key)
+            if cell_id_key in ["wafer", "slice"]:
+                # Endcaps have no wafer information.
+                line_entries[cell_id_key] = -1
+                continue
+            # print(cell_id_key, encoded_key)
             line_entries[cell_id_key] = self._id_decoder[encoded_key].value()
         line_entries["energy"] = hit.getEnergy()
         line_entries["pos_x"] = hit.getPosition()[0]
@@ -206,11 +206,10 @@ class Event2Ascii:
         string_template = " ".join([
             "{system:d} {stave:d} {module:d} {x:d} {y:d} ",
             "{tower:d} {layer:d} {wafer:d}",
-            "{energy:.4e} {pos_x:.5e} {pos_y:.5e} {pos_z:.5e}",
-            "{n_not_el:d} {n_el:d} {first_pdg:d} {first_time:.5e}",
+            "{energy:.4e} {first_time:.5e} {pos_x:.5e} {pos_y:.5e} {pos_z:.5e}",
+            "{n_not_el:d} {n_el:d} {first_pdg:d}",
         ])
         return string_template.format(**line_entries)
-
 
     def get_calo_subhit_lines(self, hit, hit_id):
         string_template = " ".join([
@@ -263,10 +262,11 @@ def validate_command_line_args():
     if not os.path.isfile(slcio_file): raise Exception(help_string)
     ascii_out_dir = os.path.abspath(sys.argv[2])
     ascii_out_parent = os.path.dirname(ascii_out_dir)
-    if not os.path.isdir(ascii_out_parent): raise Exception(help_string)
-    if not os.path.exists(ascii_out_dir):
+    if not os.path.isdir(ascii_out_parent): # check if parent exists
+        raise Exception(help_string)
+    if not os.path.exists(ascii_out_dir): # create if doesn't exists
         os.mkdir(ascii_out_dir)
-    elif len(os.listdir(ascii_out_dir)) != 0: raise Exception(help_string)
+    elif len(os.listdir(ascii_out_dir))!=0 : raise Exception(help_string)
 
     if len(sys.argv) == 3:
         ev_start = 0
@@ -281,4 +281,6 @@ def validate_command_line_args():
 
 if __name__ == "__main__":
     slcio_file, ascii_out_dir, ev_start, ev_stop = validate_command_line_args()
+    print("Converting", slcio_file, "to", ascii_out_dir)
     write_events_to_ascii(slcio_file, ascii_out_dir, ev_start, ev_stop)
+    print("Convertion done")

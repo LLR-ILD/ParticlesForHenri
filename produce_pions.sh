@@ -30,6 +30,7 @@ run_simulation () {
             --numberOfEvents=$N_EVENTS \
             --outputFile data/$PROD_NAME/$PARTICLE_TYPE.slcio \
         2>&1 | tee data/$PROD_NAME/sim_${PARTICLE_TYPE}.log
+        echo $N_EVENTS "produced in" "data/$PROD_NAME/$PARTICLE_TYPE.slcio"
     fi
 }
 

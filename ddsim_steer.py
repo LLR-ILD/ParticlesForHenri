@@ -386,7 +386,7 @@ SIM.field.stepper = "HelixSimpleRunge"
 ################################################################################
 ## Configuration for sensitive detector filters
 ## 
-##   Set the default filter for tracker or caliromter
+##   Set the default filter for tracker or calorimter
 ##   >>> SIM.filter.tracker = "edep1kev"
 ##   >>> SIM.filter.calo = ""
 ## 

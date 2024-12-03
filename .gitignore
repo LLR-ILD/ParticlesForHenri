@@ -7,3 +7,4 @@ ILD_l5_v02.xml
 *.code-workspace
 .#*
 *.log
+__pycache__/*
