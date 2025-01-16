@@ -55,18 +55,23 @@ def get_calo_hit_contribution_info(self, hit):
                 if contribution_time < time_earliest_not_electron_if_possible:
                     time_earliest_not_electron_if_possible = contribution_time
                     pdg_earliest_not_electron_if_possible = hit.getPDGCont(i)
+                    mcpart = hit.getParticleCont(i)
         else:
             n_hits_not_electron += 1
             contribution_time = hit.getTimeCont(i)
             if contribution_time < time_earliest_not_electron_if_possible:
                 time_earliest_not_electron_if_possible = contribution_time
                 pdg_earliest_not_electron_if_possible = hit.getPDGCont(i)
+                mcpart = hit.getParticleCont(i)
+    mcpartidx=-1
+    if mcpart :
+        mcpartidx = self._mcp_ids.get(mcpart.id())
     return dict(
         n_not_el=n_hits_not_electron,
         n_el=n_hits_electron,
         first_pdg=pdg_earliest_not_electron_if_possible,
         first_time=time_earliest_not_electron_if_possible,
-        
+        mcp_id=mcpartidx
     )
 
 def get_tracker_hit_contribution_info(self, hit):
@@ -254,7 +259,7 @@ class Event2Ascii:
         string_template = " ".join([
             "{primary_pdg:d} {secondary_pdg:d} {energy:.4e} {length:.2e}",
             "{time:.5e} {pos_x:.5e} {pos_y:.5e} {pos_z:.5e}",
-#            "{hit_id:d}",
+            "{hit_id:d}, {mcp_id:d}",
         ])  
         line_entries = dict(hit_id=hit_id)
         lines = []
@@ -268,7 +273,11 @@ class Event2Ascii:
             line_entries["pos_x"] = hit.getStepPosition(i_subhit)[0]
             line_entries["pos_y"] = hit.getStepPosition(i_subhit)[1]
             line_entries["pos_z"] = hit.getStepPosition(i_subhit)[2]
-#            line_entries["mcp_id"] = hit.getParticleCont(i_subhit).id()
+            mcpart = hit.getParticleCont(i_subhit)
+            mcpartidx=-1
+            if mcpart :
+                mcpartidx = self._mcp_ids.get(mcpart.id())
+            line_entries["mcp_id"] = mcpartidx
             lines.append(string_template.format(**line_entries))
         return lines
 
