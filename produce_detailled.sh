@@ -1,4 +1,4 @@
-ILCSOFT_VERSION=v02-03-03≡
+ILCSOFT_VERSION=v02-03-03
 # Choose one of the detector models from https://github.com/iLCSoft/lcgeo/tree/master/ILD/compact.
 ILD_MODEL=ILD_l5_v02_calostep250um
 # PROD_NAME_PREFIX=v5calo_250um_90x90deg_1x1deg+5cm  # geometry
@@ -57,7 +57,7 @@ run_simulation () {
 }
 
 run_pylcio_powered_2ascii () {
-    python pylcio_powered_2ascii.py \
+    python pylcio_powered_2ascii_v3.py \
         data/$PROD_NAME/$PARTICLE_TYPE.slcio \
         data/$PROD_NAME/py_ascii
 }
@@ -71,7 +71,8 @@ fi
 if [ "$1" == "all" ]; then
     particles=("gamma" "pi+")
     energies=(0.5 1 2 5 10 20 50)
-    multiplicities=(1 2)
+#    multiplicities=(1 2)
+    multiplicities=(1)
     echo "No particle type specified. All will be created."
     for p in ${particles[@]}; do
         for e in ${energies[@]}; do
@@ -85,6 +86,6 @@ if [ "$1" == "all" ]; then
     done
 else
     change_particle_type_energy_mult $1 $2 $3
-#    run_simulation $4
-    run_pylcio_powered_2ascii_v2
+    run_simulation $4
+    run_pylcio_powered_2ascii
 fi
